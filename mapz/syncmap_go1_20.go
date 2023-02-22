@@ -27,5 +27,5 @@ func (m *SyncMap[K, V]) CompareAndDelete(key K, old V) (deleted bool) {
 //
 // CompareAndSwap is only available from Go 1.20 as that is when Go added the sync.Map.CompareAndSwap method.
 func (m *SyncMap[K, V]) CompareAndSwap(key K, old, new V) bool {
-	return m.m.CompareAndSwap(key, old)
+	return m.m.CompareAndSwap(key, old, new)
 }
