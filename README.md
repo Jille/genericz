@@ -10,7 +10,10 @@ The packages below are intended to contain additions to [golang.org/x/exp/slices
 
 [![](https://godoc.org/github.com/Jille/genericz/mapz?status.svg)](https://pkg.go.dev/github.com/Jille/genericz/mapz)
 
-The mapz package contains `MinKey(m map[K]V) K` and `MaxKey(m map[K]V) K`.
+The mapz package contains:
+
+* `KeysSorted(m map[K]V) []K` and `ValuesSorted(m map[K]V) []V`
+* `MinKey(m map[K]V) K` and `MaxKey(m map[K]V) K`
 
 The `SyncMap` is a type-safe `sync.Map`.
 
