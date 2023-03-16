@@ -38,3 +38,17 @@ func Unique[T comparable](a []T) []T {
 	}
 	return out
 }
+
+// Concat concatenates multiple slices together into a single slice.
+// The input slices are not modified, order is preserved and the returned slice is exactly sized to hold its elements.
+func Concat[T any](slices ...[]T) []T {
+	n := 0
+	for _, s := range slices {
+		n += len(s)
+	}
+	ret := make([]T, 0, n)
+	for _, s := range slices {
+		ret = append(ret, s...)
+	}
+	return ret
+}
