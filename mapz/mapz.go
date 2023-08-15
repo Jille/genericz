@@ -1,6 +1,8 @@
 package mapz
 
 import (
+	"sync"
+
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -50,4 +52,18 @@ func ValuesSorted[M ~map[K]V, K comparable, V constraints.Ordered](m M) []V {
 	values := maps.Values(m)
 	slices.Sort(values)
 	return values
+}
+
+// StoreWithLock grabs l and then does m[key] = value. Useful one-liner for in a defer.
+func StoreWithLock[K comparable, V any](l sync.Locker, m map[K]V, key K, value V) {
+	l.Lock()
+	defer l.Unlock()
+	m[key] = value
+}
+
+// DeleteWithLock grabs l and then calls delete(m, key). Useful one-liner for in a defer.
+func DeleteWithLock[K comparable, V any](l sync.Locker, m map[K]V, key K) {
+	l.Lock()
+	defer l.Unlock()
+	delete(m, key)
 }
