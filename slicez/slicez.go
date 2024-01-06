@@ -16,7 +16,7 @@ func Diff[T comparable](a, b []T) []T {
 }
 
 // Filter returns `a` with only the elements for which the callback returned true.
-func Filter[T comparable](a []T, cb func(a T) bool) []T {
+func Filter[T any](a []T, cb func(a T) bool) []T {
 	var out []T
 	for _, e := range a {
 		if cb(e) {
