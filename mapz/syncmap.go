@@ -9,11 +9,11 @@ type SyncMap[K comparable, V any] struct {
 // Load returns the value stored in the map for a key. The ok result indicates whether value was found in the map.
 func (m *SyncMap[K, V]) Load(key K) (V, bool) {
 	v, ok := m.m.Load(key)
-	if ok {
+	if ok && v != nil {
 		return v.(V), true
 	}
 	var zero V
-	return zero, false
+	return zero, ok
 }
 
 // Load returns the value stored in the map for a key, or zero if no value is present. This is the same as Load() but ignoring the second result.
@@ -35,17 +35,21 @@ func (m *SyncMap[K, V]) Delete(key K) {
 // LoadAndDelete deletes the value for a key, returning the previous value if any. The second result reports whether the key was present.
 func (m *SyncMap[K, V]) LoadAndDelete(key K) (V, bool) {
 	v, ok := m.m.LoadAndDelete(key)
-	if ok {
+	if ok && v != nil {
 		return v.(V), true
 	}
 	var zero V
-	return zero, false
+	return zero, ok
 }
 
 // LoadOrStore returns the existing value for the key if present. Otherwise, it stores and returns the given value. The loaded result is true if the value was loaded, false if stored.
 func (m *SyncMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
 	a, l := m.m.LoadOrStore(key, value)
 	if l {
+		if a == nil {
+			var zero V
+			return zero, true
+		}
 		return a.(V), true
 	}
 	return value, false
@@ -58,6 +62,10 @@ func (m *SyncMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
 // Range may be O(N) with the number of elements in the map even if f returns false after a constant number of calls.
 func (m *SyncMap[K, V]) Range(f func(key K, value V) bool) {
 	m.m.Range(func(k, v any) bool {
+		if v == nil {
+			var zero V
+			return f(k.(K), zero)
+		}
 		return f(k.(K), v.(V))
 	})
 }

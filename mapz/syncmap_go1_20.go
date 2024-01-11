@@ -7,11 +7,11 @@ package mapz
 // Swap is only available from Go 1.20 as that is when Go added the sync.Map.Swap method.
 func (m *SyncMap[K, V]) Swap(key K, value V) (previous V, loaded bool) {
 	p, l := m.m.Swap(key, value)
-	if l {
+	if l && p != nil {
 		return p.(V), true
 	}
 	var zero V
-	return zero, false
+	return zero, l
 }
 
 // CompareAndDelete deletes the entry for key if its value is equal to old. The old value must be of a comparable type.
