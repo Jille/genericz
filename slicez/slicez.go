@@ -33,8 +33,8 @@ func Unique[T comparable](a []T) []T {
 	for _, e := range a {
 		if _, s := seen[e]; !s {
 			out = append(out, e)
+			seen[e] = struct{}{}
 		}
-		seen[e] = struct{}{}
 	}
 	return out
 }
