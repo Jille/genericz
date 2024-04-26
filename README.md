@@ -24,4 +24,4 @@ The `MutexMap` is a variant of `SyncMap` that uses a mutex and a regular map.
 
 [![](https://godoc.org/github.com/Jille/genericz/slicez?status.svg)](https://pkg.go.dev/github.com/Jille/genericz/slicez)
 
-The slicez packages contains Diff, Filter, Unique, Concat and Sum.
+The slicez packages contains Diff, Filter, Map, Unique, Concat and Sum.

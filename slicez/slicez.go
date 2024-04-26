@@ -52,3 +52,12 @@ func Concat[T any](slices ...[]T) []T {
 	}
 	return ret
 }
+
+// Map returns a new slice with every element from `s` converted by `fn`.
+func Map[T, U any](s []T, fn func(e T) U) []U {
+	ret := make([]U, len(s))
+	for i, e := range s {
+		ret[i] = fn(e)
+	}
+	return ret
+}
