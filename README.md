@@ -2,7 +2,7 @@
 
 # genericz - convenience made possible since generics
 
-The main package only contains `Min(a ...T) T` and `Max(a ...T) T`.
+The main package only contains `Min(a ...T) T`, `Max(a ...T) T` and `Ternary(cond bool, a, b T) T`.
 
 The packages below are intended to contain additions to [golang.org/x/exp/slices](https://pkg.go.dev/golang.org/x/exp/slices) and [golang.org/x/exp/maps](https://pkg.go.dev/golang.org/x/exp/maps) and thus won't be the full set that you need. (Over time there will be overlap as we won't remove methods as it would break backwards compatibility.)
 
