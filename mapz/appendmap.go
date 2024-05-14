@@ -17,15 +17,16 @@ type AppendMap[K comparable, V any] struct {
 
 // Load returns the value stored in the map for a key. The ok result indicates whether value was found in the map.
 func (m *AppendMap[K, V]) Load(key K) (V, bool) {
-	if f := m.fast.Load(); f != nil {
-		if v, ok := (*f)[key]; ok {
+	fast := m.fast.Load()
+	if fast != nil {
+		if v, ok := (*fast)[key]; ok {
 			return v, true
 		}
 	}
 	m.l.Lock()
 	if m.truth == nil {
 		m.l.Unlock()
-		if f := m.fast.Load(); f != nil {
+		if f := m.fast.Load(); f != nil && f != fast {
 			if v, ok := (*f)[key]; ok {
 				return v, true
 			}
