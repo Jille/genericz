@@ -6,6 +6,7 @@ import (
 )
 
 // AppendMap is a concurrency-safe append-only map. Its interface resembles a subset of sync.Map.
+// Loads on existing values only need an atomic read. Loads of non-existent and recently stored values pick up a mutex. Stores pick up a mutex.
 // The zero value is valid.
 type AppendMap[K comparable, V any] struct {
 	fast     atomic.Pointer[map[K]V]
@@ -22,13 +23,23 @@ func (m *AppendMap[K, V]) Load(key K) (V, bool) {
 		}
 	}
 	m.l.Lock()
-	defer m.l.Unlock()
-	v, ok := m.truth[key]
-	if ok {
+	if m.truth == nil {
+		m.l.Unlock()
+		if f := m.fast.Load(); f != nil {
+			if v, ok := (*f)[key]; ok {
+				return v, true
+			}
+		}
+	} else if v, ok := m.truth[key]; ok {
 		m.slowHits++
 		m.considerPromotion()
+		m.l.Unlock()
+		return v, true
+	} else {
+		m.l.Unlock()
 	}
-	return v, ok
+	var zero V
+	return zero, false
 }
 
 // LoadOrZero returns the value stored in the map for a key, or zero if no value is present. This is the same as Load() but ignoring the second result.
@@ -46,19 +57,22 @@ func (m *AppendMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
 	}
 	m.l.Lock()
 	defer m.l.Unlock()
-	v, ok := m.truth[key]
-	if ok {
-		m.slowHits++
-		m.considerPromotion()
-		return v, true
-	}
 	if m.truth == nil {
-		m.truth = map[K]V{}
 		if f := m.fast.Load(); f != nil {
+			if v, ok := (*f)[key]; ok {
+				return v, true
+			}
+			m.truth = make(map[K]V, len(*f))
 			for k, v := range *f {
 				m.truth[k] = v
 			}
+		} else {
+			m.truth = map[K]V{}
 		}
+	} else if v, ok := m.truth[key]; ok {
+		m.slowHits++
+		m.considerPromotion()
+		return v, true
 	}
 	m.truth[key] = value
 	return value, false
