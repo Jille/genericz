@@ -17,7 +17,7 @@ func (m *MutexMap[K, V]) Load(key K) (V, bool) {
 	return v, ok
 }
 
-// Load returns the value stored in the map for a key, or zero if no value is present. This is the same as Load() but ignoring the second result.
+// LoadOrZero returns the value stored in the map for a key, or zero if no value is present. This is the same as Load() but ignoring the second result.
 func (m *MutexMap[K, V]) LoadOrZero(key K) V {
 	m.L.Lock()
 	defer m.L.Unlock()
