@@ -20,6 +20,8 @@ The `SyncMap` is a type-safe `sync.Map`.
 
 The `MutexMap` is a variant of `SyncMap` that uses a mutex and a regular map.
 
+The `AppendMap` is an append-only map perfect for caching values that never change. It slightly cheaper than a `sync.Map` because values can't change.
+
 ## slicez
 
 [![](https://godoc.org/github.com/Jille/genericz/slicez?status.svg)](https://pkg.go.dev/github.com/Jille/genericz/slicez)
