@@ -41,7 +41,7 @@ func (o *OrderedObject[V]) UnmarshalJSON(b []byte) error {
 		}
 		var v V
 		if err := dec.Decode(&v); err != nil {
-			return fmt.Errorf("decoding OrderedObject value: %w", err)
+			return err
 		}
 		*o = append(*o, Member[V]{k.(string), v})
 	}
