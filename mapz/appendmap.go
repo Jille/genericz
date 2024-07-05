@@ -98,16 +98,9 @@ func (m *AppendMap[K, V]) promote() {
 //
 // Range iterates over a consistent copy of the map, snapshotted before the first callback.
 func (m *AppendMap[K, V]) Range(f func(key K, value V) bool) {
-	m.l.Lock()
-	if m.truth != nil {
-		m.promote()
-	}
-	m.l.Unlock()
-	if fm := m.fast.Load(); fm != nil {
-		for k, v := range *fm {
-			if !f(k, v) {
-				return
-			}
+	for k, v := range m.Snapshot() {
+		if !f(k, v) {
+			return
 		}
 	}
 }
@@ -124,4 +117,19 @@ func (m *AppendMap[K, V]) Len() int {
 		return len(*f)
 	}
 	return 0
+}
+
+// Snapshot returns a read-only map[K]V. Any writes that have happened before are reflected.
+// It should not be modified if the AppendMap could be used in the future.
+// Future calls to the AppendMap will not modify the returned map.
+func (m *AppendMap[K, V]) Snapshot() map[K]V {
+	m.l.Lock()
+	if m.truth != nil {
+		m.promote()
+	}
+	m.l.Unlock()
+	if fm := m.fast.Load(); fm != nil {
+		return *fm
+	}
+	return nil
 }
