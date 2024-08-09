@@ -1,6 +1,7 @@
 package mapz
 
 import (
+	"sort"
 	"sync"
 
 	"golang.org/x/exp/constraints"
@@ -52,6 +53,37 @@ func ValuesSorted[M ~map[K]V, K comparable, V constraints.Ordered](m M) []V {
 	values := maps.Values(m)
 	slices.Sort(values)
 	return values
+}
+
+// ValuesSortedByKey gets the values of the given map, sorts them by their key and returns them.
+// ValuesSortedByKey may fail to sort correctly when sorting slices of floating-point numbers containing Not-a-number (NaN) values.
+func ValuesSortedByKey[M ~map[K]V, K constraints.Ordered, V any](m M) []V {
+	keys := make([]K, 0, len(m))
+	values := make([]V, 0, len(m))
+	for k, v := range m {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+	sort.Sort(keysAndValues[K, V]{keys, values})
+	return values
+}
+
+type keysAndValues[K constraints.Ordered, V any] struct {
+	keys   []K
+	values []V
+}
+
+func (s keysAndValues[K, V]) Len() int {
+	return len(s.keys)
+}
+
+func (s keysAndValues[K, V]) Less(i, j int) bool {
+	return s.keys[i] < s.keys[j]
+}
+
+func (s keysAndValues[K, V]) Swap(i, j int) {
+	s.keys[i], s.keys[j] = s.keys[j], s.keys[i]
+	s.values[i], s.values[j] = s.values[j], s.values[i]
 }
 
 // StoreWithLock grabs l and then does m[key] = value. Useful one-liner for in a defer.

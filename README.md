@@ -12,7 +12,7 @@ The packages below are intended to contain additions to [golang.org/x/exp/slices
 
 The mapz package contains:
 
-* `KeysSorted(m map[K]V) []K` and `ValuesSorted(m map[K]V) []V`
+* `KeysSorted(m map[K]V) []K`, `ValuesSorted(m map[K]V) []V` and `ValuesSortedByKey(m map[K]V) []V`
 * `MinKey(m map[K]V) K` and `MaxKey(m map[K]V) K`
 * `DeleteWithLock(l sync.Locker, m map[K]V, key K)` and `StoreWithLock(l sync.Locker, m map[K]V, key K, value V)`
 
