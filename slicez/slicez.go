@@ -28,8 +28,29 @@ func Filter[T any](a []T, cb func(a T) bool) []T {
 
 // Unique returns `a` with all duplicate elements removed. Order is preserved.
 func Unique[T comparable](a []T) []T {
-	seen := make(map[T]struct{}, len(a))
+	if len(a) <= 50 {
+		return unique_slice(a)
+	}
+	return unique_map(a)
+}
+
+func unique_slice[T comparable](a []T) []T {
 	var out []T
+outer:
+	for _, e := range a {
+		for _, s := range out {
+			if e == s {
+				continue outer
+			}
+		}
+		out = append(out, e)
+	}
+	return out
+}
+
+func unique_map[T comparable](a []T) []T {
+	var out []T
+	seen := make(map[T]struct{}, len(a))
 	for _, e := range a {
 		if _, s := seen[e]; !s {
 			out = append(out, e)
