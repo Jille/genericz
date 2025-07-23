@@ -47,10 +47,22 @@ func MaxKey[M ~map[K]V, K constraints.Ordered, V any](m M) K {
 	return best
 }
 
+// Keys gets the keys of the given map as a slice.
+// It is more efficient than slices.Collect(maps.Keys()) because it preallocates the slice correctly.
+func Keys[M ~map[K]V, K comparable, V any](m M) []K {
+	return maps.Keys(m)
+}
+
+// Values gets the values of the given map as a slice.
+// It is more efficient than slices.Collect(maps.Values()) because it preallocates the slice correctly.
+func Values[M ~map[K]V, K comparable, V any](m M) []V {
+	return maps.Values(m)
+}
+
 // KeysSorted gets the keys of the given map, sorts them and returns them.
 // KeysSorted may fail to sort correctly when sorting slices of floating-point numbers containing Not-a-number (NaN) values.
 func KeysSorted[M ~map[K]V, K constraints.Ordered, V any](m M) []K {
-	keys := maps.Keys(m)
+	keys := Keys(m)
 	slices.Sort(keys)
 	return keys
 }
@@ -58,7 +70,7 @@ func KeysSorted[M ~map[K]V, K constraints.Ordered, V any](m M) []K {
 // ValuesSorted gets the values of the given map, sorts them and returns them.
 // ValuesSorted may fail to sort correctly when sorting slices of floating-point numbers containing Not-a-number (NaN) values.
 func ValuesSorted[M ~map[K]V, K comparable, V constraints.Ordered](m M) []V {
-	values := maps.Values(m)
+	values := Values(m)
 	slices.Sort(values)
 	return values
 }
