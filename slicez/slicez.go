@@ -82,3 +82,15 @@ func Map[T, U any](s []T, fn func(e T) U) []U {
 	}
 	return ret
 }
+
+// MakePointers creates a slice of pointers and allocates the entries.
+//
+// All Ts are allocated in a single batch, and won't be garbage collected until the entire batch is no longer referenced.
+func MakePointers[T any](n int) []*T {
+	data := make([]T, n)
+	ptrs := make([]*T, n)
+	for i := range data {
+		ptrs[i] = &data[i]
+	}
+	return ptrs
+}
