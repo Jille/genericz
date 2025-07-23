@@ -17,6 +17,10 @@ func MinKey[M ~map[K]V, K constraints.Ordered, V any](m M) K {
 	}
 	var best K
 	for k := range m {
+		best = k
+		break
+	}
+	for k := range m {
 		if best > k {
 			best = k
 		}
@@ -31,6 +35,10 @@ func MaxKey[M ~map[K]V, K constraints.Ordered, V any](m M) K {
 		panic("MaxKey: map is empty")
 	}
 	var best K
+	for k := range m {
+		best = k
+		break
+	}
 	for k := range m {
 		if best < k {
 			best = k
