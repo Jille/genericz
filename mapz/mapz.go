@@ -1,9 +1,9 @@
 package mapz
 
 import (
-	"sort"
 	"sync"
 
+	"github.com/Jille/genericz"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -84,26 +84,8 @@ func ValuesSortedByKey[M ~map[K]V, K constraints.Ordered, V any](m M) []V {
 		keys = append(keys, k)
 		values = append(values, v)
 	}
-	sort.Sort(keysAndValues[K, V]{keys, values})
+	genericz.SortWithData(keys, values)
 	return values
-}
-
-type keysAndValues[K constraints.Ordered, V any] struct {
-	keys   []K
-	values []V
-}
-
-func (s keysAndValues[K, V]) Len() int {
-	return len(s.keys)
-}
-
-func (s keysAndValues[K, V]) Less(i, j int) bool {
-	return s.keys[i] < s.keys[j]
-}
-
-func (s keysAndValues[K, V]) Swap(i, j int) {
-	s.keys[i], s.keys[j] = s.keys[j], s.keys[i]
-	s.values[i], s.values[j] = s.values[j], s.values[i]
 }
 
 // StoreWithLock grabs l and then does m[key] = value. Useful one-liner for in a defer.
