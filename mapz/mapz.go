@@ -88,6 +88,19 @@ func ValuesSortedByKey[M ~map[K]V, K constraints.Ordered, V any](m M) []V {
 	return values
 }
 
+// KeysSortedByValue gets the keys of the given map, sorts them by their value and returns them.
+// KeysSortedByValue may fail to sort correctly when sorting slices of floating-point numbers containing Not-a-number (NaN) values.
+func KeysSortedByValue[M ~map[K]V, K comparable, V constraints.Ordered](m M) []K {
+	keys := make([]K, 0, len(m))
+	values := make([]V, 0, len(m))
+	for k, v := range m {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+	genericz.SortWithData(values, keys)
+	return keys
+}
+
 // StoreWithLock grabs l and then does m[key] = value. Useful one-liner for in a defer.
 func StoreWithLock[K comparable, V any](l sync.Locker, m map[K]V, key K, value V) {
 	l.Lock()
