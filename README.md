@@ -31,7 +31,7 @@ The `AppendMap` is an append-only map perfect for caching values that never chan
 
 [![](https://godoc.org/github.com/Jille/genericz/slicez?status.svg)](https://pkg.go.dev/github.com/Jille/genericz/slicez)
 
-The slicez packages contains Diff, Filter, Map, Unique, Concat and Sum.
+The slicez packages contains Diff, Filter, Map, Unique, Concat, Sum and Pop.
 
 ## orderedobject
 
