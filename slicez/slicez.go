@@ -1,5 +1,15 @@
 package slicez
 
+// MustIndex is like [slices.Index], but panics instead of returning -1.
+func MustIndex[S ~[]E, E comparable](s S, v E) int {
+	for i := range s {
+		if v == s[i] {
+			return i
+		}
+	}
+	panic("slicez.MustIndex: element not found")
+}
+
 // Diff returns `a` with all elements occurring in `b` removed.
 func Diff[T comparable](a, b []T) []T {
 	drop := make(map[T]struct{}, len(b))
